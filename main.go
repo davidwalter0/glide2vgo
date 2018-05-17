@@ -13,7 +13,7 @@ import (
 )
 
 type Config struct {
-	Overwrite bool `json:"overwrite" doc:"replace an existing file with new output"`
+	Overwrite bool `json:"overwrite" doc:"replace an existing file with new output" default:"false"`
 	VGoDivert bool `json:"vgo-divert" doc:"use default name go.mod+base package name: go.mod.glide2vgo"`
 }
 
@@ -81,5 +81,7 @@ func main() {
 		if err = ioutil.WriteFile(VGoMod, []byte(goModText), 0666); err != nil {
 			log.Fatal(err)
 		}
+	} else if _, err := os.Stat(VGoMod); err == nil {
+		log.Fatal(fmt.Sprintf("File %s present and overwrite not set. Refusing to overwrite\n", VGoMod))
 	}
 }
